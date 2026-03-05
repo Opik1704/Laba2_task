@@ -15,13 +15,20 @@ class FileTaskSource(TaskSource):
     def get_tasks(self) -> List[Task]:
         """
         Читает задачи из JSON файла и преобразует их в объекты Task
-        Returns:
-            List[Task]: Список задач из файла или пустой список в случае ошибки
+        Returns:List[Task]: Список задач из файла или пустой список в случае ошибки
         """
         try:
             with open(self.filename, "r", encoding="utf-8") as f:
                 data = json.load(f)
-                return [Task(id=item["id"],payload = item['payload']) for item in data]
+            tasks = []
+            for item in data:
+                try:
+                    task = Task(id=item["id"],description=item.get("description", ""),priority=item.get("priority", "medium"),status=item.get("status", "pending")
+                    )
+                    tasks.append(task)
+                except Exception:
+                    continue
+            return tasks
         except FileNotFoundError:
             print("Файл не найден")
             return []

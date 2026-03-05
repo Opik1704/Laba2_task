@@ -11,22 +11,23 @@ class APITaskSource(TaskSource):
         """Создание фейковых тасков которые должны передатся с апи"""
         self.endpoint = endpoint
         self.mock_data = [
-            {"id": "task_1", "payload": {"user_id": 51, "action": "first"}},
-            {"id": "task_2", "payload": {"user_id": 52, "action": "second"}},
-            {"id": "task_3", "payload": {"user_id": 53, "action": "third"}}
+            { "id": "api_task_1","description": "Описание смешное","priority": "high","status": "pending"},
+            { "id": "api_task_2","description": "Описание несмешное","priority": "medium","status": "in_progress"},
+            { "id": "api_task_3","description": "Обновление документации","priority": "low", "status": "pending"}
         ]
     def get_tasks(self):
         """
           Имитирует получение задач от внешнего API.
-          Returns:
-              List[Task]: Список задач из мок-данных API или пустой список в случае ошибки
+          Returns: List[Task]: Список задач из мок-данных API или пустой список в случае ошибки
           """
         try:
             tasks = []
             for task in self.mock_data:
                 tasks.append(Task(
                     id=task["id"],
-                    payload=task["payload"]
+                    description=task["description"],
+                    priority=task["priority"],
+                    status=task["status"]
                 ))
             return tasks
         except Exception as e:

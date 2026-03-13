@@ -1,22 +1,17 @@
-import datetime
-from dataclasses import dataclass
-from typing import Optional
+from datetime import datetime
 
-from Laba2_task.src.descriptors import (
-    IdDescriptor,
-    DescriptionDescriptor,
-    PriorityDescriptor,
-    StatusDescriptor
-)
+from Laba2_task.src.descriptors import *
 from Laba2_task.src.exceptions import *
 
-id = IdDescriptor()
-description = DescriptionDescriptor()
-priority = PriorityDescriptor()
-status = StatusDescriptor()
-
 class Task:
-    def __init__(self, id:str, description:str,priority:int = 0,status:str = "pending"):
+    id = IdDescriptor()
+    description = DescriptionDescriptor()
+    priority = PriorityDescriptor()
+    status = StatusDescriptor()
+
+    icon = StatusIconDescriptor()
+
+    def __init__(self, id:str, description:str,priority:str ,status:str = "pending"):
         self.id = id
         self.description = description
         self.priority = priority
@@ -40,7 +35,7 @@ class Task:
     @property
     def age_seconds(self) -> float:
         """Возраст задачи в секундах"""
-        return (datetime.datetime.now() - self._created_at).total_seconds()
+        return (datetime.now() - self._created_at).total_seconds()
     @property
     def age_minutes(self) -> float:
         """Возраст задачи в минутах"""
@@ -53,8 +48,9 @@ class Task:
     def is_overdue(self) -> bool:
         """Просрочена ли задача """
         return self.age_hours > 1 and not self.is_completed
+
     def __repr__(self) -> str:
-        return f"Task(id='{self.id}', {self.status},{self,priority})"
+        return f"Task(id='{self.id}',{self.status},{self.priority})"
 
     def start(self):
         """Начать выполнение задачи"""
@@ -62,13 +58,15 @@ class Task:
             raise TaskStateError("Задача уже выполняется")
         if self.status == "pending":
             self.status = "in_progress"
-            self._started_at = datetime.datetime.now()
+            self._started_at = datetime.now()
+
     def complete(self):
         """Завершить выполнение задачи"""
         if self.status != "in_progress":
             raise TaskStateError("Завершить можно только выполняющуюся задачу")
         self.status = "completed"
-        self._completed_at = datetime.datetime.now()
+        self._completed_at = datetime.now()
+
     def cancel(self):
         """Отменить задачу"""
         if self.status != "in_progress":

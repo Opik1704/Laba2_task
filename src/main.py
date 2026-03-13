@@ -1,3 +1,5 @@
+from datetime import time
+import time
 from Laba2_task.src.Task import Task
 from Laba2_task.src.TaskSource import TaskSource
 from Laba2_task.src.FileTaskSource import FileTaskSource
@@ -5,44 +7,41 @@ from Laba2_task.src.GeneratorTaskSource import GeneratorTaskSource
 from Laba2_task.src.APITaskSource import APITaskSource
 import json
 
+from Laba2_task.src.exceptions import TaskPriorityError, TaskIdError
+
+
 def main():
-    """Вход в приложение и получение tasks"""
-    tasks = [
-        {"id": "task_5", "payload": {"user_id": 1, "action": "fifth"}},
-        {"id": "task_6", "payload": {"user_id": 2, "action": "sixth", }},
-        {"id": "task_7", "payload": {"user_id": 3, "action": "seventh",}}
-    ]
-    with open("tasks.json", "w", encoding="utf-8") as f:
-        json.dump(tasks, f)
+    """Вход в приложение и создание tasks и вызов методов"""
+    task = Task(id="Task1", description="Описание", priority="high")
 
-    task_source = [
-        FileTaskSource("tasks.json"),
-        GeneratorTaskSource(5),
-        APITaskSource()
-    ]
+    print(f"Задача создана: {task}")
+    print(task.is_ready)
+    print(f"Возраст задачи: {task.age_seconds:.4f} сек")
 
-    all_tasks = []
-    for task in task_source:
-        if isinstance(task, TaskSource):
-            tasks = task.get_tasks()
-            all_tasks.extend(tasks)
-    for task in all_tasks:
-        print(task)
+    task.start()
+    print(task.status, task.icon)
+    time.sleep(1.1)
+    print(task.is_overdue)
 
-    classes = [
-        FileTaskSource,
-        GeneratorTaskSource,
-        APITaskSource,
-        str,
-        int,
-        list,
-        dict
-    ]
-    for cls in classes:
-        if issubclass(cls, TaskSource):
-            print(cls.__name__,"Реализует контракт TaskSource")
-        else:
-            print(cls.__name__," НЕ реализует контракт TaskSource")
+    task.complete()
+    print(task.is_completed, task.icon)
 
+    try:
+        task.priority = "fake"
+    except TaskPriorityError as e:
+        print(f"Ошибка {e}")
+
+    try:
+        task.id = 12345
+    except TaskIdError as e:
+        print(f"Ошибка {e}")
+
+    print(f"Иконка по умолчанию {task.icon}")
+    task.icon = "🔥"
+    print(f"Иконка после правки {task.icon}")
+
+    print(f"Текущий приоритет: {task.priority}")
+    task.__dict__['priority'] = "fake"
+    print(f"Лезем грязными руками {task.priority}")
 if __name__ == "__main__":
     main()

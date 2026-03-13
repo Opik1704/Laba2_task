@@ -1,5 +1,5 @@
 import re
-from typing import Optional
+from typing import Optional, Any
 
 from Laba2_task.src.exceptions import *
 
@@ -8,11 +8,11 @@ class IdDescriptor:
     """Дескриптор для id"""
     def __init__(self):
         self._data = {}
-    def __get__(self, obj, objtype=None):
+    def __get__(self, obj, objtype=None)->Any:
         if obj is None:
             return self
         return obj.__dict__.get('_id', '')
-    def __set__(self, obj, value):
+    def __set__(self, obj, value)->None:
         if not isinstance(value, str):
             raise TaskIdError(f"ID должен быть строкой {type(value).__name__}")
         obj.__dict__['_id'] = value
@@ -22,11 +22,11 @@ class DescriptionDescriptor:
     """Дескриптор для  description."""
     def __init__(self):
         self._data = {}
-    def __get__(self, obj, objtype=None):
+    def __get__(self, obj, objtype=None)->Any:
         if obj is None:
             return self
         return obj.__dict__.get('_description', '')
-    def __set__(self, obj, value: str):
+    def __set__(self, obj, value: str)->None:
         if not isinstance(value, str):
             raise TaskDescriptionError(
                 f"Описание должно быть строкой {type(value).__name__}"
@@ -46,10 +46,11 @@ class PriorityDescriptor:
         return obj.__dict__.get('_priority', 'medium')
     def __set__(self,obj,value:str)->None:
         if not isinstance(value,str):
-            raise TaskDescriptionError( f"Приоритет должен быть строкой, получен {type(value).__name__}")
+            raise TaskPriorityError( f"Приоритет должен быть строкой, получен {type(value).__name__}")
         if value not in PriorityDescriptor.VALID_PRIORITIES:
             raise TaskPriorityError(f"Приоритет должен быть одним из {self.VALID_PRIORITIES}")
         obj.__dict__['_priority'] = value
+
 class StatusDescriptor:
     """Дескриптор для status"""
     VALID_STATUSES = {"pending", "in_progress", "completed", "failed"}
@@ -57,12 +58,24 @@ class StatusDescriptor:
         if obj is None:
             return self
         return obj.__dict__.get('_status', 'pending')
-    def __set_(self,obj,value):
+    def __set__(self,obj,value)-> None:
         if not isinstance(value, str):
             raise TaskStatusError(f"Статус должен быть строкой {type(value).__name__}")
         if value not in StatusDescriptor.VALID_STATUSES:
             raise TaskStatusError(f"Статус должен быть одним из {self.VALID_STATUSES}")
-
+        obj.__dict__['_status'] = value
+class StatusIconDescriptor:
+    """Non-data descriptor чтобы надо"""
+    ICONS = {
+        "pending": "⏳",
+        "in_progress": "🚀",
+        "completed": "✅",
+        "failed": "❌"
+    }
+    def __get__(self, obj, objtype=None)-> Any:
+        if obj is None:
+            return self
+        return self.ICONS.get(obj.status, "❓")
 
 
 

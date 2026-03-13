@@ -17,6 +17,3 @@ class TaskStatusError(Exception):
 class TaskStateError(Exception):
     """Ошибка при неправильном переходе состояния задачи"""
     pass
-class TaskStateError(Exception):
-    """Ошибка при неправильном назначении состояния задачи"""
-    pass

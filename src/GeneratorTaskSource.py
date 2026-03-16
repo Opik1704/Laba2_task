@@ -5,7 +5,7 @@ from Laba2_task.src.Task import Task
 from Laba2_task.src.TaskSource import TaskSource
 
 
-class GeneratorTaskSource(TaskSource):
+class GeneratorTaskSource:
     DESCRIPTIONS = ["Описание1","Описание2","Описание3","Описание4","Описание5"]
     PRIORITIES = ["low", "medium", "high", "critical"]
     STATUSES = ["pending", "in_progress", "completed", "failed"]

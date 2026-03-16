@@ -5,7 +5,7 @@ from Laba2_task.src.Task import Task
 from Laba2_task.src.TaskSource import TaskSource
 
 
-class FileTaskSource(TaskSource):
+class FileTaskSource:
     """
     Читает задачи из Json файла
     """

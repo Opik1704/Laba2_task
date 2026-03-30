@@ -16,8 +16,7 @@ class APITaskSource:
     def get_tasks(self):
         """
           Имитирует получение задач от внешнего API.
-          Returns: List[Task]: Список задач из мок-данных API или пустой список в случае ошибки
-          """
+        """
         try:
             tasks = []
             for task in self.mock_data:
